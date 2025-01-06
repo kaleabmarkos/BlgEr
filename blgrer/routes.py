@@ -1,7 +1,7 @@
 from flask import flash, render_template, url_for, redirect
 from blgrer.models import User, Post
 from blgrer.forms import Registeration, LoginForm
-from blgrer import app
+from blgrer import app, db, bcrypt
 
 
 
@@ -40,8 +40,12 @@ def about():
 def register():
     form = Registeration()
     if form.validate_on_submit():
+        hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user=User(user_name = form.user_name.data, email=form.email.data, password=hash)
+        db.session.add(user)
+        db.session.commit()
         flash(f"Account created for {form.user_name.data}!", 'success')
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
 @app.route('/login',methods=['GET','POST'])
