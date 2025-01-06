@@ -12,4 +12,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db=SQLAlchemy(app)
 
+bcrypt = Bcrypt()
+
 from blgrer import routes
